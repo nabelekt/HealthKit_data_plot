@@ -15,6 +15,7 @@ window_px_sizes = get(fig, 'position');
 window_width = checkbox_width*2 + inset*4;
 window_height = 155 + (half_record_count + 1)*25;
 set(fig, 'position', [window_px_sizes(1), window_px_sizes(2), window_width, window_height]);
+
 y_pos = window_height;
 
 % Create checkboxes
@@ -30,12 +31,14 @@ y_pos = y_pos - text_height - inset;
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
         'Position', [15, y_pos, window_width-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
         'String', message_str);
-y_pos = y_pos - text_height + 15;
+
+    y_pos = y_pos - text_height + 15;
 
 text_height = 18;
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
         'Position', [inset, y_pos, window_width-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-        'fontweight', 'bold', 'String', 'Select record types to be plotted:');
+        'fontweight', 'bold', 'String', 'Record types to be plotted:');
+
 y_pos = y_pos - text_height - 5;
     
 % Create record checkboxes
@@ -49,23 +52,36 @@ for ind = half_record_count+1:size(record_types, 1)
         'Position', [(inset*3)+checkbox_width, y_pos - 25*(ind-half_record_count-1), checkbox_width, 18],...
         'FontSize', font_size, 'String', [char(record_type_names(ind)) ' (' char(record_units(ind)) ')']);
 end
+
 y_pos = y_pos - (half_record_count)*(25);
 
 text_height = 18;
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
-        'Position', [inset, y_pos, window_width-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-        'fontweight', 'bold', 'String', 'Select plot type:');
+        'Position', [inset, y_pos, window_width/2-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
+        'fontweight', 'bold', 'String', 'Plot type:');
+    
+uicontrol('Style', 'Text', 'Units', 'Pixels',...
+        'Position', [(inset*3)+checkbox_width, y_pos, window_width/2-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
+        'fontweight', 'bold', 'String', 'Date tick every:');
+    
 y_pos = y_pos - text_height - 10;
     
 selector_height = 26;
-plot_type_selector = uicontrol('Style', 'PopupMenu', 'Position', [inset, y_pos, 120, selector_height], 'FontSize', font_size,...
-        'HorizontalAlignment', 'Left', 'String', {'Scatter Plot', 'Line Plot'});
+plot_type_selector = uicontrol('Style', 'PopupMenu', 'Position', [inset, y_pos, 120, selector_height],...
+    'FontSize', font_size, 'HorizontalAlignment', 'Left', 'String', {'Scatter Plot', 'Line Plot'});
+    
+selector_height = 26;
+x_label_interval_selector = uicontrol('Style', 'PopupMenu', 'Position', [(inset*3)+checkbox_width, y_pos, 120, selector_height],...
+    'FontSize', font_size, 'HorizontalAlignment', 'Left',...
+    'String', {'year', 'month', 'week', 'day', 'hour', 'minute'});
+
 y_pos = y_pos - selector_height - 15;
 
 button_height = 26;
 window_pos = fig.Position;
 uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-100)/2, y_pos, 100, button_height],...
         'FontSize', font_size, 'String', 'Proceed', 'Callback', @handle_proceed_button);
+    
     
 % user_input = false(size(record_types, 1), 1);
     
@@ -86,9 +102,10 @@ uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-1
             user_input(record_type_ind) = true;
           end
         end
-            assignin('base', 'user_input', user_input);
-            assignin('base', 'plot_type', plot_type_selector.String(plot_type_selector.Value));
-        
+        assignin('base', 'user_input', user_input);
+        assignin('base', 'plot_type', plot_type_selector.String(plot_type_selector.Value));
+        assignin('base', 'x_label_interval', x_label_interval_selector.String(x_label_interval_selector.Value));
+
         % Close user input window and resume main script
         close gcf;
     end

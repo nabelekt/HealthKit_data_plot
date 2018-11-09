@@ -101,16 +101,21 @@ set(gca, 'FontSize', 14, 'XLim', [min_date, max_date]);
 xlabel(date_header);
 
 % Plot each value type as separate series
-for record_type_ind = 1:num_record_types
+for record_type_ind = 1:1%num_record_types
     feval(func_name, data_to_plot{record_type_ind}.(date_header), data_to_plot{record_type_ind}.(value_header));
     unit_name = char(data.(unit_header)(1));  % Get unit as first element in unit column
     record_type = char(data.(record_type_header)(1));  % Get record type as first element in record type column
     ylabel(sprintf('%s (%s)', record_type, unit_name));
 end
 
-% Format x-axis tick labels
+% Create x-axis tick labels
 ax = gca;
-set(gca, 'XTickLabelRotation', 30, 'XTick', ax.XLim(1):x_tick_step:ax.XLim(2))
+% x_tick_labels = ax.XLim(1):x_tick_step:ax.XLim(2);
+set(ax, 'Units', 'Pixels');
+ax_len = ax.Position(3);
+max_num_labels = ax_len/30; % 30 px is about the space needed for one axis label
+x_tick_labels = x_labels(min_date, max_date, max_num_labels, x_label_interval);
+set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_labels)
 datetick('x', x_tick_label_format, 'keepticks')
 
 % Save figure and close
