@@ -62,7 +62,7 @@ uicontrol('Style', 'Text', 'Units', 'Pixels',...
     
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
         'Position', [(inset*3)+checkbox_width, y_pos, window_width/2-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-        'fontweight', 'bold', 'String', 'Date tick every:');
+        'fontweight', 'bold', 'String', 'Mark date and time axis by:');
     
 y_pos = y_pos - text_height - 10;
     
@@ -104,7 +104,7 @@ uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-1
         end
         assignin('base', 'user_input', user_input);
         assignin('base', 'plot_type', plot_type_selector.String(plot_type_selector.Value));
-        assignin('base', 'x_label_interval', x_label_interval_selector.String(x_label_interval_selector.Value));
+        assignin('base', 'x_tick_interval', x_label_interval_selector.String(x_label_interval_selector.Value));
 
         % Close user input window and resume main script
         close gcf;

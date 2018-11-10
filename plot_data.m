@@ -114,8 +114,8 @@ ax = gca;
 set(ax, 'Units', 'Pixels');
 ax_len = ax.Position(3);
 max_num_labels = ax_len/30; % 30 px is about the space needed for one axis label
-x_tick_labels = x_labels(min_date, max_date, max_num_labels, x_label_interval);
-set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_labels)
+x_tick_vec = x_ticks(min_date, max_date, max_num_labels, x_tick_interval);
+set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_vec)
 datetick('x', x_tick_label_format, 'keepticks')
 
 % Save figure and close
