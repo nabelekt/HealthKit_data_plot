@@ -4,11 +4,6 @@ clear;
 fprintf('\nWelcome.\n');
 
 % input_file_name = 'output.csv';
-include_seconds_in_x_axis_labels = false;
-x_tick_step = 28; % 1 = 1 day, 0.25 = 6 hours
-% x_tick_label_format = 'yy-mm-dd HH:MM::SS';
-% x_tick_label_format = 'mm/dd HH PM';
-x_tick_label_format = 'mm/dd/yy';
 
 % Get data file path
 if ~exist('input_file_name', 'var')
@@ -109,12 +104,10 @@ for record_type_ind = 1:1%num_record_types
 end
 
 % Create x-axis tick labels
-ax = gca;
-% x_tick_labels = ax.XLim(1):x_tick_step:ax.XLim(2);
-set(ax, 'Units', 'Pixels');
-ax_len = ax.Position(3);
+ax_px_pos = getpixelposition(gca);
+ax_len = ax_px_pos(3);
 max_num_labels = ax_len/30; % 30 px is about the space needed for one axis label
-x_tick_vec = x_ticks(min_date, max_date, max_num_labels, x_tick_interval);
+[x_tick_vec, x_tick_label_format] = x_ticks(min_date, max_date, max_num_labels, x_tick_interval);
 set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_vec)
 datetick('x', x_tick_label_format, 'keepticks')
 

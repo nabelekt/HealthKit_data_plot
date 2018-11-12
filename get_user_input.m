@@ -73,7 +73,7 @@ plot_type_selector = uicontrol('Style', 'PopupMenu', 'Position', [inset, y_pos, 
 selector_height = 26;
 x_label_interval_selector = uicontrol('Style', 'PopupMenu', 'Position', [(inset*3)+checkbox_width, y_pos, 120, selector_height],...
     'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-    'String', {'year', 'month', 'week', 'day', 'hour', 'minute'});
+    'String', {'auto', 'year', 'month', 'week', 'day', 'hour', 'minute'});
 
 y_pos = y_pos - selector_height - 15;
 
