@@ -112,5 +112,7 @@ set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_vec)
 datetick('x', x_tick_label_format, 'keepticks')
 
 % Save figure and close
-% saveas(gcf, 'plot.png')
+fprintf('Done.\nSaving plot as ''health_data_plot.png''... ');
+saveas(gcf, 'health_data_plot.png')
+fprintf('Done.\n\n');
 % close(gcf)
