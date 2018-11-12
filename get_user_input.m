@@ -13,7 +13,7 @@ assignin('base', 'user_input_figure', fig); % Used by uiwait() in main script
 set(fig, 'units', 'pixels')
 window_px_sizes = get(fig, 'position');
 window_width = checkbox_width*2 + inset*4;
-window_height = 155 + (half_record_count + 1)*25;
+window_height = 200;
 set(fig, 'position', [window_px_sizes(1), window_px_sizes(2), window_width, window_height]);
 
 y_pos = window_height;
@@ -42,18 +42,24 @@ uicontrol('Style', 'Text', 'Units', 'Pixels',...
 y_pos = y_pos - text_height - 5;
     
 % Create record checkboxes
-for ind = 1:half_record_count
-    record_type_check_boxes(ind) = uicontrol('Style', 'Checkbox', 'Units', 'Pixels',...
-        'Position', [inset, y_pos - 25*(ind-1), checkbox_width, 18],...
-        'FontSize', font_size, 'String', [char(record_type_names(ind)) ' (' char(record_units(ind)) ')']);
-end
-for ind = half_record_count+1:size(record_types, 1)
-    record_type_check_boxes(ind) = uicontrol('Style', 'Checkbox', 'Units', 'Pixels',...
-        'Position', [(inset*3)+checkbox_width, y_pos - 25*(ind-half_record_count-1), checkbox_width, 18],...
-        'FontSize', font_size, 'String', [char(record_type_names(ind)) ' (' char(record_units(ind)) ')']);
-end
+% for ind = 1:half_record_count
+%     record_type_check_boxes(ind) = uicontrol('Style', 'Checkbox', 'Units', 'Pixels',...
+%         'Position', [inset, y_pos - 25*(ind-1), checkbox_width, 18],...
+%         'FontSize', font_size, 'String', [char(record_type_names(ind)) ' (' char(record_units(ind)) ')']);
+% end
+% for ind = half_record_count+1:size(record_types, 1)
+%     record_type_check_boxes(ind) = uicontrol('Style', 'Checkbox', 'Units', 'Pixels',...
+%         'Position', [(inset*3)+checkbox_width, y_pos - 25*(ind-half_record_count-1), checkbox_width, 18],...
+%         'FontSize', font_size, 'String', [char(record_type_names(ind)) ' (' char(record_units(ind)) ')']);
+% end
 
-y_pos = y_pos - (half_record_count)*(25);
+record_strs = cellfun(@concat_record_type_strs, record_type_names, record_units, 'UniformOutput', false);
+
+record_type_selector = uicontrol('Style', 'PopupMenu', 'Units', 'Pixels',...
+        'Position', [inset, y_pos, checkbox_width, 18],...
+        'FontSize', font_size, 'String', record_strs);
+
+y_pos = y_pos - 25;
 
 text_height = 18;
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
@@ -82,27 +88,22 @@ window_pos = fig.Position;
 uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-100)/2, y_pos, 100, button_height],...
         'FontSize', font_size, 'String', 'Proceed', 'Callback', @handle_proceed_button);
     
+    function str = concat_record_type_strs(type, unit)
+        str = [char(type) ' (' char(unit) ')'];
+    end
+
     
-% user_input = false(size(record_types, 1), 1);
-    
-%     function handle_check_box(src, ~, record_type_ind)
-%         if src.Value
-%             user_input(record_type_ind) = true;
-%         else
-%             user_input(record_type_ind) = false;
-%         end
-%     end
-%     
     function handle_proceed_button(~, ~)
         
         % Pass user input to main script
-        user_input = false(size(record_types, 1), 1);
-        for record_type_ind = 1:size(record_types, 1)
-          if record_type_check_boxes(record_type_ind).Value
-            user_input(record_type_ind) = true;
-          end
-        end
-        assignin('base', 'user_input', user_input);
+%         user_input = false(size(record_types, 1), 1);
+%         for record_type_ind = 1:size(record_types, 1)
+%           if record_type_check_boxes(record_type_ind).Value
+%             user_input(record_type_ind) = true;
+%           end
+%         end
+%         assignin('base', 'user_input', user_input);
+        assignin('base', 'user_input', record_type_selector.Value);
         assignin('base', 'plot_type', plot_type_selector.String(plot_type_selector.Value));
         assignin('base', 'x_tick_interval', x_label_interval_selector.String(x_label_interval_selector.Value));
 
