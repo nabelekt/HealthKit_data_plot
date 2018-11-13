@@ -1,6 +1,14 @@
 close all;
 clear;
 
+addpath('utilities/isValidDate')
+
+if ispc  % Use smaller font on Windows
+    font_size = 11;
+else
+    font_size = 14;
+end
+
 fprintf('\nWelcome.\n');
 
 % input_file_name = 'output.csv';
@@ -41,11 +49,12 @@ record_types = cell2table(record_types, 'VariableNames', {record_type_header, un
 
 % Have user select which record types to keep
 fprintf('Done.\nPlease select record types to plot and plot type...  ');
-get_user_input(record_types); % Retuns check box booleans as 'user_input'
+select_record_types(record_types);
+  % Returns check box booleans as 'selected_record_types'
 uiwait(user_input_figure);  % Wait until user input window has been closed
 
 % Exit if no record types were selected
-if ~exist('user_input', 'var') || sum(user_input) == 0
+if ~exist('selected_record_types', 'var') || sum(selected_record_types) == 0
     fprintf('\nNo record types selected.\nExiting.\n\n')
     return;
 end
@@ -53,7 +62,7 @@ end
 fprintf('Done.\nProcessing data... ');
 
 % Keep only selected records
-record_types = record_types(user_input, :);
+record_types = record_types(selected_record_types, :);
 data = data(ismember(data.(record_type_header), record_types.(record_type_header)), :);
 
 % Get dates as strings, remove UTC offsets, convert to numeric values
@@ -78,11 +87,7 @@ max_date = max(data_to_plot{:}.(date_header));
 
 fprintf('Done.\nPlotting data... ');
 
-if strcmp(extractBefore(plot_type, ' '), 'Line')
-    func_name = 'plot';
-else
-    func_name = 'scatter';
-end
+func_name = 'scatter';
 
 % Setup plot
 data_plot = figure;
@@ -92,7 +97,7 @@ set(gcf, 'Units', 'Normalized', 'OuterPosition', [.05 .1 .9 .8])
 set(gca, 'Position', [0.07 0.12 0.88 0.815])
 grid on
 hold on
-set(gca, 'FontSize', 14, 'XLim', [min_date, max_date]);
+set(gca, 'FontSize', font_size, 'XLim', [min_date, max_date]);
 xlabel(date_header);
 
 % Plot each value type as separate series
@@ -107,12 +112,20 @@ end
 ax_px_pos = getpixelposition(gca);
 ax_len = ax_px_pos(3);
 max_num_labels = ax_len/30; % 30 px is about the space needed for one axis label
-[x_tick_vec, x_tick_label_format] = x_ticks(min_date, max_date, max_num_labels, x_tick_interval);
+[x_tick_vec, x_tick_label_format] = x_ticks(min_date, max_date, max_num_labels, 'auto');
 set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_vec)
 datetick('x', x_tick_label_format, 'keepticks')
 
+plot_options(min_date, max_date);
+
+% if strcmp(extractBefore(plot_type, ' '), 'Line')
+%     func_name = 'plot';
+% else
+%     func_name = 'scatter';
+% end
+
 % Save figure and close
-fprintf('Done.\nSaving plot as ''health_data_plot.png''... ');
-saveas(gcf, 'health_data_plot.png')
-fprintf('Done.\n\n');
+% fprintf('Done.\nSaving plot as ''health_data_plot.png''... ');
+% saveas(gcf, 'health_data_plot.png')
+% fprintf('Done.\n\n');
 % close(gcf)

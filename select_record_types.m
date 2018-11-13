@@ -1,6 +1,10 @@
-function user_input = get_user_input(record_types)
+function select_record_types(record_types)
 
-font_size = 13;
+if ispc  % Use smaller font on Windows
+    font_size = 9;
+else
+    font_size = 13;
+end
 
 half_record_count = ceil(size(record_types, 1)/2);
 inset = 15;
@@ -13,7 +17,7 @@ assignin('base', 'user_input_figure', fig); % Used by uiwait() in main script
 set(fig, 'units', 'pixels')
 window_px_sizes = get(fig, 'position');
 window_width = checkbox_width*2 + inset*4;
-window_height = 200;
+window_height = 175;
 set(fig, 'position', [window_px_sizes(1), window_px_sizes(2), window_width, window_height]);
 
 y_pos = window_height;
@@ -37,7 +41,7 @@ uicontrol('Style', 'Text', 'Units', 'Pixels',...
 text_height = 18;
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
         'Position', [inset, y_pos, window_width-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-        'fontweight', 'bold', 'String', 'Record types to be plotted:');
+        'fontweight', 'bold', 'String', 'Record type to be plotted:');
 
 y_pos = y_pos - text_height - 5;
     
@@ -59,32 +63,9 @@ record_type_selector = uicontrol('Style', 'PopupMenu', 'Units', 'Pixels',...
         'Position', [inset, y_pos, checkbox_width, 18],...
         'FontSize', font_size, 'String', record_strs);
 
-y_pos = y_pos - 25;
-
-text_height = 18;
-uicontrol('Style', 'Text', 'Units', 'Pixels',...
-        'Position', [inset, y_pos, window_width/2-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-        'fontweight', 'bold', 'String', 'Plot type:');
-    
-uicontrol('Style', 'Text', 'Units', 'Pixels',...
-        'Position', [(inset*3)+checkbox_width, y_pos, window_width/2-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-        'fontweight', 'bold', 'String', 'Mark date and time axis by:');
-    
-y_pos = y_pos - text_height - 10;
-    
-selector_height = 26;
-plot_type_selector = uicontrol('Style', 'PopupMenu', 'Position', [inset, y_pos, 120, selector_height],...
-    'FontSize', font_size, 'HorizontalAlignment', 'Left', 'String', {'Scatter Plot', 'Line Plot'});
-    
-selector_height = 26;
-x_label_interval_selector = uicontrol('Style', 'PopupMenu', 'Position', [(inset*3)+checkbox_width, y_pos, 120, selector_height],...
-    'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-    'String', {'auto', 'year', 'month', 'week', 'day', 'hour', 'minute'});
-
-y_pos = y_pos - selector_height - 15;
+y_pos = y_pos - 55;
 
 button_height = 26;
-window_pos = fig.Position;
 uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-100)/2, y_pos, 100, button_height],...
         'FontSize', font_size, 'String', 'Proceed', 'Callback', @handle_proceed_button);
     
@@ -96,16 +77,14 @@ uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-1
     function handle_proceed_button(~, ~)
         
         % Pass user input to main script
-%         user_input = false(size(record_types, 1), 1);
+%         selected_record_types = false(size(record_types, 1), 1);
 %         for record_type_ind = 1:size(record_types, 1)
 %           if record_type_check_boxes(record_type_ind).Value
-%             user_input(record_type_ind) = true;
+%             selected_record_types(record_type_ind) = true;
 %           end
 %         end
-%         assignin('base', 'user_input', user_input);
-        assignin('base', 'user_input', record_type_selector.Value);
-        assignin('base', 'plot_type', plot_type_selector.String(plot_type_selector.Value));
-        assignin('base', 'x_tick_interval', x_label_interval_selector.String(x_label_interval_selector.Value));
+%         assignin('base', 'selected_record_types', selected_record_types);
+        assignin('base', 'selected_record_types', record_type_selector.Value);
 
         % Close user input window and resume main script
         close gcf;
