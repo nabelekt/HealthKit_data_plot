@@ -2,6 +2,7 @@ close all;
 clear;
 
 addpath('utilities/isValidDate')
+addpath('utilities/UIGetDate')
 
 if ispc  % Use smaller font on Windows
     font_size = 11;

@@ -52,11 +52,23 @@ uicontrol('Style', 'Text', 'Units', 'Pixels',...
         'fontweight', 'bold', 'String', 'Ending date and time:');
     
 y_pos = y_pos - text_height - 10;
+
 field_spacer = 5;
-field_width = 40;
-bump = 0;
-min_date_field = uicontrol('Style', 'edit', 'Position', [inset+bump, y_pos, field_width, selector_height],...
-    'FontSize', font_size, 'HorizontalAlignment', 'Left', 'String', 'YYYY');
+
+date_min_vec = datevec(min_date);
+date_min_vec = num2str(date_min_vec(:));
+field_widths = [0 50 25 25 25 25];
+for field_ind = 1:5
+    x_pos = inset+field_spacer*(field_ind-1)+sum(field_widths(1:field_ind));
+    min_date_field(field_ind) = uicontrol('Style', 'edit', 'FontSize', font_size,...
+         'Position', [x_pos, y_pos, field_widths(field_ind+1), selector_height],...
+         'HorizontalAlignment', 'Right', 'String', date_min_vec(field_ind, :)); %#ok<AGROW>
+%     set(min_date_field(field_ind), 'Units', 'characters')
+%     pos = get(min_date_field(field_ind), 'Position');
+%     field_width = size(date_min_vec(field_ind, :), 2);
+%     set(min_date_field(field_ind), 'Position', [pos(1)+last_field_width pos(2) field_width pos(4)])
+%     last_field_width = field_width;
+end
     
 max_date_field = uicontrol('Style', 'edit', 'Position', [(inset*3)+column_width, y_pos, 120, selector_height],...
     'FontSize', font_size, 'HorizontalAlignment', 'Left',...
