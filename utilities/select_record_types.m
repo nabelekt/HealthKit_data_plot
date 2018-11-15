@@ -89,32 +89,5 @@ uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-1
         % Close user input window and resume main script
         close gcf;
     end
-   
-
-% % Create date selection text message
-% uicontrol('Style', 'Text', 'Units', 'Pixels',...
-%         'Position', [left_inset, y_pos, window_width-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-%         'fontweight', 'bold', 'String', 'Select date range to be plotted:');
-% y_pos = y_pos - text_height - 10;
-% 
-% selector_height = 26;
-% uicontrol('Style', 'PopupMenu', 'Position', [left_inset, y_pos, 80, selector_height], 'FontSize', font_size,...
-%         'HorizontalAlignment', 'Right', 'String', cellstr(num2str([1:12]'))); %#ok<NBRAK>
-
-% button_height = 26;
-% window_pos = input_window.fig.Position;
-% uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [left_inset, y_pos, 120, button_height],...
-%         'FontSize', font_size, 'String', 'Set Date Range', 'Callback', {@date_picker, window_pos, dates});
-        
-%     function date_picker(~, ~, window_pos, dates)
-%         figure('Position', [window_pos(1)+100, window_pos(2)+100, window_pos(3)-200, window_pos(4)-200],...
-%             'menu', 'none');
-%         
-%     end
-    
-%     function date_picker(~, ~, window_pos, dates)
-%         f = uifigure('Position', [window_pos(1)+100, window_pos(2)+100, window_pos(3)-200, window_pos(4)-200]);
-%         uidatepicker(f);
-%     end
 
 end

@@ -1,5 +1,7 @@
 function [x_ticks, x_tick_label_format] = x_ticks(min_date, max_date, max_num_labels, x_label_interval)
 
+x_label_interval = lower(x_label_interval); % Swap uppercase letters for lowercase
+
 if strcmp(char(x_label_interval), 'auto')
     dt = max_date - min_date;  % Find number of days being plotted
     min_interval = dt/max_num_labels;  % Find smallest number of days/tick given max_num_labels
