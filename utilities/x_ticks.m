@@ -5,8 +5,10 @@ x_label_interval = lower(x_label_interval); % Swap uppercase letters for lowerca
 if strcmp(char(x_label_interval), 'auto')
     dt = max_date - min_date;  % Find number of days being plotted
     min_interval = dt/max_num_labels;  % Find smallest number of days/tick given max_num_labels
-    if min_interval > 31
+    if min_interval > 92
         x_label_interval = 'year';
+    elseif min_interval > 31
+        x_label_interval = 'quarter';
     elseif min_interval > 7
         x_label_interval = 'month';
 	elseif min_interval > 1
@@ -28,6 +30,59 @@ if strcmp(char(x_label_interval), 'year')
     years = start(1):stop(1)+1;
     date_vecs(:,   1) = years';
     date_vecs(:, 2:3) = 1;
+    date_vecs(:, 4:6) = 0;
+    x_ticks = datenum(date_vecs);
+    x_tick_label_format = 'mm/dd/yy';
+elseif strcmp(char(x_label_interval), 'quarter')
+    % Set label values to MM/01/YYYY 00:00:00
+    num_years = stop(1) - start(1) + 1;
+    % Map to start of quarter
+    switch true
+        case ismember(start(2), [1, 2, 3])
+            month_start = 1;
+        case ismember(start(2), [4, 5, 6])
+            month_start = 4;
+        case ismember(start(2), [7, 8, 9])
+            month_start = 7;
+        case ismember(start(2), [10, 11, 12])
+            month_start = 10;
+    end
+    % Map to end of quarter
+    switch true
+        case ismember(stop(2), [1, 2, 3])
+            month_end = 4;
+        case ismember(stop(2), [4, 5, 6])
+            month_end = 7;
+        case ismember(stop(2), [7, 8, 9])
+            month_end = 10;
+        case ismember(stop(2), [10, 11, 12])
+            month_end = 1;
+    end
+    months = month_start:3:12;
+    if num_years > 2
+        months = [months, repmat(1:3:12, 1, num_years-2)];
+    end
+    if num_years > 1
+        month_end_t = month_end;
+        if month_end == 1
+            month_end_t = 10;
+        end
+        months = [months, 1:3:month_end_t];
+        if month_end == 1
+            months = [months, 1];
+        end        
+    end
+    date_vecs(:, 2) = months';
+    
+    year = start(1);
+    for date_ind = 1:size(date_vecs, 1)
+        date_vecs(date_ind, 1) = year;
+        if date_vecs(date_ind, 2) >= 10
+            year = year + 1;
+        end
+    end
+    
+    date_vecs(:,   3) = 1;
     date_vecs(:, 4:6) = 0;
     x_ticks = datenum(date_vecs);
     x_tick_label_format = 'mm/dd/yy';
