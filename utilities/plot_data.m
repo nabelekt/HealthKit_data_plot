@@ -26,13 +26,18 @@ end
 ax_px_pos = getpixelposition(gca);
 ax_len = ax_px_pos(3);
 max_num_labels = ax_len/30; % 30 px is about the space needed for one axis label
-[x_tick_vec, x_tick_label_format] = x_ticks(min_date, max_date, max_num_labels, x_label_interval);
+[x_tick_vec, x_tick_label_format_init] = x_ticks(min_date, max_date, max_num_labels, x_label_interval);
 set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_vec)
-try
+
+try % If label format was set and valid, use it
     datetick('x', x_tick_label_format, 'keepticks')
-catch
-    my_msgbox('ERROR: X-tick label format is not recognized. Please see exampels.', font_size);
+catch % If label format was not set or not valid, use auto label format
+    datetick('x', x_tick_label_format_init, 'keepticks')
+    if exist('x_tick_label_format', 'var') % If not the first time through
+        err_box = my_msgbox(sprintf('ERROR: X-tick label format is not recognized.\nPlease see exampels.'), font_size);
+    end
 end
+uistack(data_plot, 'bottom') % Keep plot options window on top
 
 fprintf('Done.\n');
 

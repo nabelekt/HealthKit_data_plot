@@ -1,6 +1,6 @@
 % Modified from https://www.mathworks.com/matlabcentral/answers/395348-how-can-i-change-the-font-size-of-msgbox
 
-function my_msgbox(str, font_size)
+function mb = my_msgbox(str, font_size)
 
     mb = msgbox(str);
     text = findall(mb, 'Type', 'Text');
