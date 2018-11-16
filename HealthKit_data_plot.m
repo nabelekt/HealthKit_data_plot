@@ -93,5 +93,3 @@ func_name = 'scatter';
 x_label_interval = 'Auto';
 
 plot_data
-
-plot_options(min_date, max_date);

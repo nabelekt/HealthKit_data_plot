@@ -2,7 +2,7 @@ fprintf('Plotting data... ');
 
 % Setup plot
 if exist('data_plot', 'var') && ishandle(data_plot)
-%     close(data_plot)
+    close(data_plot)
 end
 data_plot = figure;
 data_ax = axes;
@@ -28,6 +28,15 @@ ax_len = ax_px_pos(3);
 max_num_labels = ax_len/30; % 30 px is about the space needed for one axis label
 [x_tick_vec, x_tick_label_format] = x_ticks(min_date, max_date, max_num_labels, x_label_interval);
 set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_vec)
-datetick('x', x_tick_label_format, 'keepticks')
+try
+    datetick('x', x_tick_label_format, 'keepticks')
+catch
+    my_msgbox('ERROR: X-tick label format is not recognized. Please see exampels.', font_size);
+end
 
 fprintf('Done.\n');
+
+% Open plot options figure and reopen if it was closed
+if ~exist('plot_options_fig', 'var') || ~ishandle(plot_options_fig)
+    plot_options(min_date, max_date);
+end

@@ -60,7 +60,9 @@ elseif strcmp(char(x_label_interval), 'week')
     min_date_t = floor(min_date);
     max_date_t = ceil(max_date);
     min_date_t = min_date_t - weekday(min_date_t) + 1;
-    max_date_t = max_date_t + 7 - weekday(max_date_t) + 1;
+    if weekday(max_date_t) ~= 1 % Bump max date to next sunday
+        max_date_t = max_date_t + (7 - weekday(max_date_t)) + 1;
+    end
    
     x_ticks = datenum(min_date_t:7:max_date_t);
     x_tick_label_format = 'mm/dd/yy';
