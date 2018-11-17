@@ -27,4 +27,4 @@ msg_str = sprintf(['<html>See <a href="' url '">documentation</a> for list, desc
 jLabel = javaObjectEDT('javax.swing.JLabel', msg_str);
 [hjLabel,~] = javacomponent(jLabel, [inset, window_height-inset-text_height, text_width, text_height], gcf);
 hjLabel.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
-set(hjLabel, 'MouseClickedCallback', @(h,e)web(url, '-browser'))       
+set(hjLabel, 'MouseClickedCallback', @(h,e)web(url, '-browser'))

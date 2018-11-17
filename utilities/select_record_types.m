@@ -6,7 +6,11 @@ else
     font_size = 13;
 end
 
-half_record_count = ceil(size(record_types, 1)/2);
+record_type_names = table2cell(record_types(:, 1));
+record_type_names = strrep(record_type_names, 'HKQuantityTypeIdentifier', '');
+record_units = table2cell(record_types(:, 2));
+
+% half_record_count = ceil(size(record_types, 1)/2);
 inset = 15;
 checkbox_width = 250;
 
@@ -22,23 +26,22 @@ set(fig, 'position', [window_px_sizes(1), window_px_sizes(2), window_width, wind
 
 y_pos = window_height;
 
-% Create checkboxes
-record_type_names = table2cell(record_types(:, 1));
-record_type_names = strrep(record_type_names, 'HKQuantityTypeIdentifier', '');
-record_units = table2cell(record_types(:, 2));
-
-% Create record selection text message
-message_str = 'For an explination of record types, see: https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier';
-
-text_height = 36;
-y_pos = y_pos - text_height - inset;
-uicontrol('Style', 'Text', 'Units', 'Pixels',...
-        'Position', [15, y_pos, window_width-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
-        'String', message_str);
-
-    y_pos = y_pos - text_height + 15;
-
+% Create record selection note
 text_height = 18;
+y_pos = y_pos - text_height*2;
+url = 'https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier';
+msg_str = sprintf(['<html>For an explination of record types, see <a href="' url '">Apple''s documentation</a>.']);
+jLabel = javaObjectEDT('javax.swing.JLabel', msg_str);
+[hjLabel,~] = javacomponent(jLabel, [inset, y_pos, window_width-30, text_height], gcf);
+hjLabel.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+set(hjLabel, 'MouseClickedCallback', @(h,e)web(url, '-browser'))
+
+% uicontrol('Style', 'Text', 'Units', 'Pixels',...
+%         'Position', [inset, y_pos, window_width-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
+%         'String', message_str);
+
+y_pos = y_pos - text_height;
+
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
         'Position', [inset, y_pos, window_width-30, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
         'fontweight', 'bold', 'String', 'Record type to be plotted:');
