@@ -1,4 +1,4 @@
-function plot_options(min_date, max_date)
+function plot_options(min_date, max_date, unit, y_min, y_max)
 
 if ispc  % Use smaller font on Windows
     font_size = 9;
@@ -9,51 +9,51 @@ end
 inset = 15;
 column_1_width = 190;
 column_2_width = 225;
+text_height = 18;
+selector_height = 26;
 
 % Create figure -----------------------------------------------------------
 options_fig = figure('units', 'normalized', 'position', [0.6, 0.6, .4, .4], 'menu', 'none',...
-    'NumberTitle', 'off', 'Name', 'Set Plot Options');
+    'NumberTitle', 'off', 'Name', 'Plot Options');
 %         % Keep plot options window on top
 %         uistack(options_fig, 'top')
 assignin('base', 'plot_options_fig', options_fig)
 set(options_fig, 'units', 'pixels')
 window_px_sizes = get(options_fig, 'position');
 window_width = column_1_width + column_2_width + inset*4;
-window_height = 230;
+window_height = 310;
 set(options_fig, 'position', [window_px_sizes(1), window_px_sizes(2), window_width, window_height]);
 
 y_pos = window_height;
 
 % Plot Type ----------------------------------------------------------------------------------------
-text_height = 18;
 y_pos = y_pos - text_height - inset;
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
         'Position', [inset, y_pos, column_1_width, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
         'fontweight', 'bold', 'String', 'Plot type:');
     
 y_pos = y_pos - text_height - 10;
-selector_height = 26;
 plot_type_selector = uicontrol('Style', 'PopupMenu', 'Position', [inset, y_pos, 120, selector_height],...
     'FontSize', font_size, 'HorizontalAlignment', 'Left', 'String', {'Scatter Plot', 'Line Plot'});
 
 % Tick Labels --------------------------------------------------------------------------------------
-y_pos = y_pos - selector_height - 5;
+y_pos = y_pos - selector_height - 25;
     
 uicontrol('Style', 'Text', 'Units', 'Pixels',...
-        'Position', [inset, y_pos, column_1_width, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
+        'Position', [inset, y_pos-text_height, column_1_width, text_height*2], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
         'fontweight', 'bold', 'String', 'Mark date and time axis by:');
 % uicontrol('Style', 'Text', 'Units', 'Pixels',...
 %         'Position', [(inset*3)+column_width, y_pos, window_width/2-30, text_height], 'FontSize', font_size,...
 %         'HorizontalAlignment', 'Left', 'fontweight', 'bold', 'String', 'X-tick label format:');
 
 % Create field label with hyperlink
-labelStr = ['<html><b>X-tick label format (<a href="">examples</a>):</b></html>'];
+labelStr = ['<html><b>Date and time axis tick<br>label format (<a href="">examples</a>):</b></html>'];
 jLabel = javaObjectEDT('javax.swing.JLabel', labelStr);
-[hjLabel,~] = javacomponent(jLabel, [(inset*3)+column_1_width, y_pos, column_2_width, text_height], gcf);
+[hjLabel,~] = javacomponent(jLabel, [(inset*3)+column_1_width, y_pos, column_2_width, text_height*2], gcf);
 hjLabel.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 set(hjLabel, 'MouseClickedCallback', @label_format_examples)
         
-y_pos = y_pos - text_height - 10;
+y_pos = y_pos - text_height*2 + 10;
 x_label_interval_selector = uicontrol('Style', 'PopupMenu', 'Position', [inset y_pos, 120, selector_height],...
     'FontSize', font_size, 'HorizontalAlignment', 'Left',...
     'String', {'Auto', 'Year', 'Quarter', 'Month', 'Week', 'Day', 'Hour', 'Minute'});
@@ -83,7 +83,29 @@ date_str_format = 'yyyy/mm/dd HH:MM';
 max_date_field = uicontrol('Style', 'edit', 'FontSize', font_size+1,...
          'Position', [inset*3+column_1_width, y_pos, 130, selector_height],...
          'HorizontalAlignment', 'Right', 'String', datestr(max_date, date_str_format));
-     
+
+% Y-axis Min and Max -------------------------------------------------------------------------------
+y_pos = y_pos - selector_height - 5;
+
+uicontrol('Style', 'Text', 'Units', 'Pixels',...
+        'Position', [inset, y_pos, column_1_width, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
+        'fontweight', 'bold', 'String', sprintf('Y-axis minimum (%s):', unit));
+    
+uicontrol('Style', 'Text', 'Units', 'Pixels',...
+        'Position', [(inset*3)+column_1_width, y_pos, column_2_width, text_height], 'FontSize', font_size, 'HorizontalAlignment', 'Left',...
+        'fontweight', 'bold', 'String', sprintf('Y-axis maximum (%s):', unit));
+    
+y_pos = y_pos - text_height - 10;
+
+y_min_field = uicontrol('Style', 'edit', 'FontSize', font_size+1,...
+         'Position', [inset, y_pos, 130, selector_height],...
+         'HorizontalAlignment', 'Right', 'String', num2str(y_min));
+
+y_max_field = uicontrol('Style', 'edit', 'FontSize', font_size+1,...
+         'Position', [inset*3+column_1_width, y_pos, 130, selector_height],...
+         'HorizontalAlignment', 'Right', 'String', num2str(y_max));
+
+% "Replot" push button -----------------------------------------------------------------------------
 y_pos = y_pos - selector_height - 15;
 
 button_height = 26;
@@ -125,6 +147,10 @@ uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-1
         end
         assignin('base', 'min_date', datenum(min_date_field.String));
         assignin('base', 'max_date', datenum(max_date_field.String));
+        
+        % Set y-axis limits
+        assignin('base', 'y_min_str', y_min_field.String);
+        assignin('base', 'y_max_str', y_max_field.String);
         
         % Replot data in new figure
         evalin('base', 'plot_data')

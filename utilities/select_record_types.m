@@ -21,7 +21,7 @@ assignin('base', 'user_input_figure', fig); % Used by uiwait() in main script
 set(fig, 'units', 'pixels')
 window_px_sizes = get(fig, 'position');
 window_width = checkbox_width*2 + inset*4;
-window_height = 175;
+window_height = 150;
 set(fig, 'position', [window_px_sizes(1), window_px_sizes(2), window_width, window_height]);
 
 y_pos = window_height;

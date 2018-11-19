@@ -1,3 +1,5 @@
+% NOTE: Some values used here are assigned by handle_proceed_button() in plot_options.m
+
 fprintf('Plotting data... ');
 
 % Setup plot
@@ -17,9 +19,9 @@ xlabel(date_header);
 % Plot each value type as separate series
 for record_type_ind = 1:1%num_record_types
     feval(func_name, data_to_plot{record_type_ind}.(date_header), data_to_plot{record_type_ind}.(value_header));
-    unit_name = char(data.(unit_header)(1));  % Get unit as first element in unit column
+    unit = char(data.(unit_header)(1));  % Get unit as first element in unit column
     record_type = char(data.(record_type_header)(1));  % Get record type as first element in record type column
-    ylabel(sprintf('%s (%s)', record_type, unit_name));
+    ylabel(sprintf('%s (%s)', record_type, unit));
 end
 
 % Create x-axis tick labels
@@ -39,9 +41,30 @@ catch % If label format was not set or not valid, use auto label format
 end
 uistack(data_plot, 'bottom') % Keep plot options window on top
 
+% Set y axis limits
+try % If y min and max was set and valid, use it
+%     if ~isnan(str2double(y_min_str)) && ~isnan(str2double(y_max_str))  % Don't overwrite previous values if not valid
+        y_min_t = str2double(y_min_str);
+        y_max_t = str2double(y_max_str);
+        set(data_ax, 'YLim', [y_min_t y_max_t]);
+        y_min = y_min_t;
+        y_max = y_max_t;
+%     else
+%         throw
+%     end
+catch % If y min and max was not set or not valid, use previous limits, if possible
+    try
+        set(data_ax, 'YLim', [y_min y_max]);
+    catch
+    end
+    if exist('y_min_str', 'var')  || exist('y_max_str', 'var') % If not the first time through
+        err_box = my_msgbox(sprintf('ERROR: Y-axis min and/or max is invalid.'), font_size);
+    end
+end
+
 fprintf('Done.\n');
 
 % Open plot options figure and reopen if it was closed
 if ~exist('plot_options_fig', 'var') || ~ishandle(plot_options_fig)
-    plot_options(min_date, max_date);
+    plot_options(min_date, max_date, unit, data_ax.YLim(1), data_ax.YLim(2));
 end
