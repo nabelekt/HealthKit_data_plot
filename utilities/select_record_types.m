@@ -88,6 +88,7 @@ uicontrol('Style', 'PushButton', 'Units', 'Pixels', 'Position', [(window_width-1
 %         end
 %         assignin('base', 'selected_record_types', selected_record_types);
         assignin('base', 'selected_record_types', record_type_selector.Value);
+        assignin('base', 'record_type', char(record_type_names(record_type_selector.Value)));
 
         % Close user input window and resume main script
         close gcf;

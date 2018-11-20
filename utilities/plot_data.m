@@ -20,8 +20,8 @@ xlabel(date_header);
 for record_type_ind = 1:1%num_record_types
     feval(func_name, data_to_plot{record_type_ind}.(date_header), data_to_plot{record_type_ind}.(value_header));
     unit = char(data.(unit_header)(1));  % Get unit as first element in unit column
-    record_type = char(data.(record_type_header)(1));  % Get record type as first element in record type column
-    ylabel(sprintf('%s (%s)', record_type, unit));
+%     record_type = char(data.(record_type_header)(1));  % Get record type as first element in record type column
+    ylabel(sprintf('%s (%s)', record_type, unit));  % record_type is set by select_record_types
 end
 
 % Create x-axis tick labels
@@ -43,15 +43,11 @@ uistack(data_plot, 'bottom') % Keep plot options window on top
 
 % Set y axis limits
 try % If y min and max was set and valid, use it
-%     if ~isnan(str2double(y_min_str)) && ~isnan(str2double(y_max_str))  % Don't overwrite previous values if not valid
         y_min_t = str2double(y_min_str);
         y_max_t = str2double(y_max_str);
         set(data_ax, 'YLim', [y_min_t y_max_t]);
         y_min = y_min_t;
         y_max = y_max_t;
-%     else
-%         throw
-%     end
 catch % If y min and max was not set or not valid, use previous limits, if possible
     try
         set(data_ax, 'YLim', [y_min y_max]);
@@ -61,6 +57,10 @@ catch % If y min and max was not set or not valid, use previous limits, if possi
         err_box = my_msgbox(sprintf('ERROR: Y-axis min and/or max is invalid.'), font_size);
     end
 end
+
+% Set data cursor to show date and time as date string
+data_cursor_h = datacursormode(gcf);
+set(data_cursor_h, 'UpdateFcn', @data_cursor_text)
 
 fprintf('Done.\n');
 
