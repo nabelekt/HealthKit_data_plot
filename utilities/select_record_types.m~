@@ -28,17 +28,17 @@ y_pos = window_height;
 
 % Create record selection note
 text_height = 18;
-y_pos = y_pos - text_height*7;
+y_pos = y_pos - text_height*6;
 url = 'https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier';
 msg_str = sprintf(['<html>For an explination of record types, see <a href="' url '">Apple''s documentation</a>.',...
                    ' Note that because of the way that watchOS/iOS measures and stores many of these record',...
                    ' types, it does not make much sense to plot their individual data points. For example,'...
                    ' the ''DistanceWalkingRunning'' record type records movement over relatively short and varying',...
                    ' time periods. To resolve this issue, support for some type of data aggregation (such as summing',...
-                   ' all of the data points over one day) is planned for some time in the future.']);
+                   ' all of the data points over one day) is planned for some time in the future (ticket number).']);
                
 jLabel = javaObjectEDT('javax.swing.JLabel', msg_str);
-[hjLabel,~] = javacomponent(jLabel, [inset, y_pos, window_width-30, text_height*6], gcf);
+[hjLabel,~] = javacomponent(jLabel, [inset, y_pos, window_width-30, text_height*5], gcf);
 hjLabel.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 set(hjLabel, 'MouseClickedCallback', @(h,e)web(url, '-browser'))
 
