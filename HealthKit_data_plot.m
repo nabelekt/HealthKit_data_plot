@@ -91,5 +91,6 @@ max_date = max(data_to_plot{:}.(date_header));
 % Initial plot parameters
 func_name = 'scatter';
 x_label_interval = 'Auto';
+aggregate_data_by = 'none';
 
 plot_data

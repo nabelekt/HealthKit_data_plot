@@ -18,9 +18,11 @@ xlabel(date_header);
 
 % Plot each value type as separate series
 for record_type_ind = 1:1%num_record_types
-    feval(func_name, data_to_plot{record_type_ind}.(date_header), data_to_plot{record_type_ind}.(value_header));
+    [dates_and_times, values] = aggregate_data(...
+        aggregate_data_by, data_to_plot{record_type_ind}.(date_header), data_to_plot{record_type_ind}.(value_header),...
+        min_date, max_date);
+    feval(func_name, dates_and_times, values);
     unit = char(data.(unit_header)(1));  % Get unit as first element in unit column
-%     record_type = char(data.(record_type_header)(1));  % Get record type as first element in record type column
     ylabel(sprintf('%s (%s)', record_type, unit));  % record_type is set by select_record_types
 end
 
