@@ -52,6 +52,11 @@ switch interval
                 months = [months, 1];
             end        
         end
+        if num_years == 1
+            if month_end == 1
+                months = [months, 1];
+            end        
+        end
         date_vecs(:, 2) = months';
 
         year = start(1);

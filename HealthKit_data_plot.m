@@ -85,8 +85,8 @@ end
 fprintf('Done.\n');
 
 % Get initial min and max dates based on user selected record types
-min_date = min(data_to_plot{:}.(date_header));
-max_date = max(data_to_plot{:}.(date_header));
+min_date_init = min(data_to_plot{:}.(date_header));
+max_date_init = max(data_to_plot{:}.(date_header));
 
 % Initial plot parameters
 func_name = 'scatter';

@@ -3,6 +3,8 @@
 function [dates_and_times_out, values_out] = aggregate_data(aggregate_data_by, dates_and_times_in, values_in,...
     min_date, max_date)
 
+aggregate_data_by = lower(aggregate_data_by); % Swap uppercase letters for lowercase
+
 if strcmp('none', aggregate_data_by)
     dates_and_times_out = dates_and_times_in;
     values_out = values_in;
