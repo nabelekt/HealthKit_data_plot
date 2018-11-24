@@ -64,7 +64,6 @@ end
 
 ylabel(sprintf('%s (%s)', record_type, unit));  % record_type is set by select_record_types
 
-
 % --------------------------------------------------------------------------------------------------
 % Set data cursor to show date and time as date string
 data_cursor_h = datacursormode(gcf);

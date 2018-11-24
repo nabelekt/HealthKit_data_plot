@@ -13,7 +13,7 @@ text_height = 18;
 selector_height = 26;
 
 % Create figure -----------------------------------------------------------
-options_fig = figure('units', 'normalized', 'position', [0.6, 0.6, .4, .4], 'menu', 'none',...
+options_fig = figure('units', 'normalized', 'position', [0.6, 0.5, .4, .4], 'menu', 'none',...
     'NumberTitle', 'off', 'Name', 'Plot Options');
 %         % Keep plot options window on top
 %         uistack(options_fig, 'top')
@@ -21,7 +21,7 @@ assignin('base', 'plot_options_fig', options_fig)
 set(options_fig, 'units', 'pixels')
 window_px_sizes = get(options_fig, 'position');
 window_width = column_1_width + column_2_width + inset*4;
-window_height = 380;
+window_height = 360;
 set(options_fig, 'position', [window_px_sizes(1), window_px_sizes(2), window_width, window_height]);
 
 y_pos = window_height;
@@ -115,7 +115,7 @@ y_min_field = uicontrol('Style', 'edit', 'FontSize', font_size+1,...
 y_max_field = uicontrol('Style', 'edit', 'FontSize', font_size+1,...
          'Position', [inset*3+column_1_width, y_pos, 130, selector_height],...
          'HorizontalAlignment', 'Right', 'String', num2str(y_max));
-     
+
 % "Replot" pushbutton ------------------------------------------------------------------------------
 y_pos = y_pos - selector_height - 15;
 
