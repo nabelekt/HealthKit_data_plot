@@ -1,6 +1,15 @@
 close all;
 clear;
 
+addpath('./utilities')
+addpath('./utilities/isValidDate')
+
+if ispc  % Use smaller font on Windows
+    font_size = 11;
+else
+    font_size = 14;
+end
+
 fprintf('\nWelcome.\n');
 
 % input_file_name = 'output.csv';
@@ -41,11 +50,12 @@ record_types = cell2table(record_types, 'VariableNames', {record_type_header, un
 
 % Have user select which record types to keep
 fprintf('Done.\nPlease select record types to plot and plot type...  ');
-get_user_input(record_types); % Retuns check box booleans as 'user_input'
+select_record_types(record_types);
+  % Returns check box booleans as 'selected_record_types'
 uiwait(user_input_figure);  % Wait until user input window has been closed
 
 % Exit if no record types were selected
-if ~exist('user_input', 'var') || sum(user_input) == 0
+if ~exist('selected_record_types', 'var') || sum(selected_record_types) == 0
     fprintf('\nNo record types selected.\nExiting.\n\n')
     return;
 end
@@ -53,7 +63,7 @@ end
 fprintf('Done.\nProcessing data... ');
 
 % Keep only selected records
-record_types = record_types(user_input, :);
+record_types = record_types(selected_record_types, :);
 data = data(ismember(data.(record_type_header), record_types.(record_type_header)), :);
 
 % Get dates as strings, remove UTC offsets, convert to numeric values
@@ -72,47 +82,15 @@ for record_type_ind = 1:num_record_types
     data_to_plot{record_type_ind} = data(data_indices_bool, :);
 end
 
-% Get min and max dates based on user selected record types
-min_date = min(data_to_plot{:}.(date_header));
-max_date = max(data_to_plot{:}.(date_header));
+fprintf('Done.\n');
 
-fprintf('Done.\nPlotting data... ');
+% Get initial min and max dates based on user selected record types
+min_date_init = min(data_to_plot{:}.(date_header));
+max_date_init = max(data_to_plot{:}.(date_header));
 
-if strcmp(extractBefore(plot_type, ' '), 'Line')
-    func_name = 'plot';
-else
-    func_name = 'scatter';
-end
+% Initial plot parameters
+func_name = 'scatter';
+x_label_interval = 'Auto';
+aggregate_data_by = 'none';
 
-% Setup plot
-data_plot = figure;
-data_ax = axes;
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [.05 .1 .9 .8])
-% set(gcf, 'units', 'normalized', 'OuterPosition', [.05 .1 .1 .1])
-set(gca, 'Position', [0.07 0.12 0.88 0.815])
-grid on
-hold on
-set(gca, 'FontSize', 14, 'XLim', [min_date, max_date]);
-xlabel(date_header);
-
-% Plot each value type as separate series
-for record_type_ind = 1:1%num_record_types
-    feval(func_name, data_to_plot{record_type_ind}.(date_header), data_to_plot{record_type_ind}.(value_header));
-    unit_name = char(data.(unit_header)(1));  % Get unit as first element in unit column
-    record_type = char(data.(record_type_header)(1));  % Get record type as first element in record type column
-    ylabel(sprintf('%s (%s)', record_type, unit_name));
-end
-
-% Create x-axis tick labels
-ax_px_pos = getpixelposition(gca);
-ax_len = ax_px_pos(3);
-max_num_labels = ax_len/30; % 30 px is about the space needed for one axis label
-[x_tick_vec, x_tick_label_format] = x_ticks(min_date, max_date, max_num_labels, x_tick_interval);
-set(gca, 'XTickLabelRotation', 30, 'XTick', x_tick_vec)
-datetick('x', x_tick_label_format, 'keepticks')
-
-% Save figure and close
-fprintf('Done.\nSaving plot as ''health_data_plot.png''... ');
-saveas(gcf, 'health_data_plot.png')
-fprintf('Done.\n\n');
-% close(gcf)
+plot_data
